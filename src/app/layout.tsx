@@ -49,9 +49,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Bu site <span className="whitespace-nowrap">HSD İnönü</span> tarafından yapıldı.
                 </p>
               </div>
-              <p className="max-w-sm text-sm text-ink-soft sm:text-right">
-                Şarkıların ve kapakların tüm hakları sahiplerine aittir. Sorun yaşarsan yarışma ekibine yaz.
-              </p>
+              <div className="max-w-sm text-sm text-ink-soft sm:text-right">
+                <p>Şarkıların ve kapakların tüm hakları sahiplerine aittir. Sorun yaşarsan yarışma ekibine yaz.</p>
+                <p className="mt-1">
+                  <a href="/kurallar">Kurallar</a>
+                  <span aria-hidden="true" className="mx-2">/</span>
+                  <a href="/gizlilik">Gizlilik</a>
+                </p>
+              </div>
             </div>
           </footer>
         </PlayerProvider>
