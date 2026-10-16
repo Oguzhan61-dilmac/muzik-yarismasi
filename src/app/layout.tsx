@@ -35,8 +35,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </Suspense>
           <main className="flex-1 pb-28">{children}</main>
           <footer className="border-t-2 border-ink">
-            <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-ink-soft">
-              Şarkıların ve kapakların tüm hakları sahiplerine aittir. Sorun yaşarsan yarışma ekibine yaz.
+            <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-8 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/hsd-logo.png"
+                  alt="HSD, Huawei Student Developers"
+                  width={264}
+                  height={84}
+                  className="h-11 w-auto shrink-0"
+                />
+                <p className="font-semibold leading-snug">
+                  Bu site <span className="whitespace-nowrap">HSD İnönü</span> tarafından yapıldı.
+                </p>
+              </div>
+              <p className="max-w-sm text-sm text-ink-soft sm:text-right">
+                Şarkıların ve kapakların tüm hakları sahiplerine aittir. Sorun yaşarsan yarışma ekibine yaz.
+              </p>
             </div>
           </footer>
         </PlayerProvider>
