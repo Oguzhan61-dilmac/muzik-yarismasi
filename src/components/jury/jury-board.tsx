@@ -186,6 +186,11 @@ export function JuryBoard({
               {blind ? "Sanatçı adı gizli" : card.entry.artistName}
               {card.entry.genre && <span className="ml-2 rounded-sm bg-ink/5 px-1.5 py-0.5 text-sm">{card.entry.genre}</span>}
             </p>
+            {card.entry.aiTools && (
+              <p className="mt-2 text-sm">
+                <span className="font-semibold">Yapay zekâ araçları:</span> {card.entry.aiTools}
+              </p>
+            )}
             <div className="mt-4">
               <PlayButton track={track} />
             </div>
@@ -194,7 +199,7 @@ export function JuryBoard({
 
         {card.entry.description && (
           <div className="mt-6 max-w-prose">
-            <h3 className="font-semibold">Hikâyesi</h3>
+            <h3 className="font-semibold">Nasıl üretildi?</h3>
             <p className="mt-1 whitespace-pre-line text-ink-soft">{card.entry.description}</p>
           </div>
         )}

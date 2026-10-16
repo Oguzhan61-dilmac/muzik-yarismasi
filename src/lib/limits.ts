@@ -4,6 +4,7 @@ export const LIMITS = {
   title: 80,
   artistName: 60,
   genre: 40,
+  aiTools: 120,
   description: 600,
   // Oylamada şarkılar çok dinlenir; Supabase ücretsiz planının aylık veri çıkışı sınırlı olduğu için 10 MB.
   audioBytes: 10 * 1024 * 1024,
@@ -27,6 +28,7 @@ export const GENRES = [
   "Türk halk müziği",
   "Türk sanat müziği",
   "Caz",
+  "Lo-fi",
   "Enstrümantal",
   "Diğer",
 ];

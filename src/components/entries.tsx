@@ -47,6 +47,7 @@ export function FinalistGrid({
             {e.artistName}
             {e.genre && <span className="ml-2 rounded-sm bg-ink/5 px-1.5 py-0.5 text-sm">{e.genre}</span>}
           </p>
+          {e.aiTools && <p className="mt-1 line-clamp-2 text-sm text-ink-soft">{e.aiTools}</p>}
           {voting && (
             <div className="mt-4">
               <VoteButton entryId={e.id} myVote={myVote} loggedIn={loggedIn} />

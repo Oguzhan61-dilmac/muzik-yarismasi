@@ -21,7 +21,7 @@ async function Submit() {
   const [settings, viewer] = await Promise.all([getSettings(), getViewer()]);
   const lead = settings.submissionDeadline
     ? `Son başvuru ${formatDate(settings.submissionDeadline)}.`
-    : "Şarkını ve kapak görselini yükle, gerisini jüriye bırak.";
+    : "Yapay zekâyla ürettiğin şarkıyı ve kapağını yükle, gerisini jüriye bırak.";
 
   if (settings.phase !== "submissions") {
     return (

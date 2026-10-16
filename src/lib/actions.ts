@@ -21,6 +21,7 @@ export type EntryInput = {
   title: string;
   artistName: string;
   genre: string;
+  aiTools: string;
   description: string;
   audioPath: string;
   coverPath: string;
@@ -37,8 +38,10 @@ export async function submitEntry(input: EntryInput): Promise<ActionResult> {
   const title = clean(input.title, LIMITS.title);
   const artistName = clean(input.artistName, LIMITS.artistName);
   const genre = clean(input.genre, LIMITS.genre) || null;
+  const aiTools = clean(input.aiTools, LIMITS.aiTools);
   const description = String(input.description ?? "").trim().slice(0, LIMITS.description) || null;
   if (!title || !artistName) return { ok: false, message: "Şarkı adı ve sanatçı adı zorunlu." };
+  if (!aiTools) return { ok: false, message: "Kullandığın yapay zekâ araçlarını yazmalısın." };
   if (
     !isValidStoragePath(input.audioPath, viewer.id, input.id, AUDIO_FORMATS) ||
     !isValidStoragePath(input.coverPath, viewer.id, input.id, COVER_FORMATS)
@@ -53,6 +56,7 @@ export async function submitEntry(input: EntryInput): Promise<ActionResult> {
     title,
     artist_name: artistName,
     genre,
+    ai_tools: aiTools,
     description,
     audio_path: input.audioPath,
     cover_path: input.coverPath,

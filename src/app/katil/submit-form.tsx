@@ -84,6 +84,7 @@ export function SubmitForm({ userId }: { userId: string }) {
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
   const [genre, setGenre] = useState("");
+  const [aiTools, setAiTools] = useState("");
   const [description, setDescription] = useState("");
   const [audio, setAudio] = useState<File | null>(null);
   const [cover, setCover] = useState<File | null>(null);
@@ -153,6 +154,7 @@ export function SubmitForm({ userId }: { userId: string }) {
       return;
     }
     if (!title.trim() || !artist.trim()) return setError("Şarkı adı ve sanatçı adı zorunlu.");
+    if (!aiTools.trim()) return setError("Kullandığın yapay zekâ araçlarını yaz.");
     if (!audio) return setError("Şarkı dosyanı seç.");
     if (!cover) return setError("Kapak görselini seç.");
     if (!owns || !rules) return setError("Göndermeden önce iki onay kutusunu da işaretle.");
@@ -178,6 +180,7 @@ export function SubmitForm({ userId }: { userId: string }) {
         title,
         artistName: artist,
         genre,
+        aiTools,
         description,
         audioPath,
         coverPath,
@@ -225,12 +228,22 @@ export function SubmitForm({ userId }: { userId: string }) {
         </div>
         <div>
           <div className="flex items-baseline justify-between">
-            <label htmlFor={`${ids}-desc`} className="field-label">Şarkının hikâyesi <span className="font-normal text-ink-soft">(isteğe bağlı)</span></label>
+            <label htmlFor={`${ids}-ai`} className="field-label">Kullandığın yapay zekâ araçları</label>
+            <Counter value={aiTools} max={LIMITS.aiTools} />
+          </div>
+          <input id={`${ids}-ai`} className="input" value={aiTools} maxLength={LIMITS.aiTools} required
+            onChange={(e) => setAiTools(e.target.value)} autoComplete="off"
+            placeholder="Örn. Suno ile müzik, sözler bana ait, kapak Midjourney" />
+          <span className="field-help">Müzik, vokal, söz ve kapak için hangi araçları kullandığını yaz. Jüri ve dinleyiciler bunu görür.</span>
+        </div>
+        <div>
+          <div className="flex items-baseline justify-between">
+            <label htmlFor={`${ids}-desc`} className="field-label">Nasıl ürettin? <span className="font-normal text-ink-soft">(isteğe bağlı)</span></label>
             <Counter value={description} max={LIMITS.description} />
           </div>
           <textarea id={`${ids}-desc`} className="input" value={description} maxLength={LIMITS.description}
             onChange={(e) => setDescription(e.target.value)} />
-          <span className="field-help">Kısa bir not: ne zaman, nasıl, kimle yaptın?</span>
+          <span className="field-help">Şarkının fikri nereden çıktı, sözleri sen mi yazdın, kaç deneme yaptın, sonradan neyi düzenledin?</span>
         </div>
 
         <div>
@@ -250,7 +263,7 @@ export function SubmitForm({ userId }: { userId: string }) {
         <div className="space-y-3 border-t-2 border-dotted border-ink/40 pt-6">
           <label className="flex items-start gap-3">
             <input type="checkbox" checked={owns} onChange={(e) => setOwns(e.target.checked)} className="mt-1 h-5 w-5 accent-[var(--color-pink)]" />
-            <span>Bu şarkı bana ya da grubuma ait; sitede yayınlanmasına ve oylamaya açılmasına izin veriyorum.</span>
+            <span>Bu şarkıyı yapay zekâ araçlarıyla ben ürettim; kullandığım araçların koşulları paylaşmama izin veriyor. Sitede yayınlanmasına ve oylamaya açılmasına izin veriyorum.</span>
           </label>
           <label className="flex items-start gap-3">
             <input type="checkbox" checked={rules} onChange={(e) => setRules(e.target.checked)} className="mt-1 h-5 w-5 accent-[var(--color-pink)]" />
@@ -276,7 +289,7 @@ export function SubmitForm({ userId }: { userId: string }) {
             ) : (
               <span className="px-6 text-center">
                 <span className="display block text-3xl">Kapak seç</span>
-                <span className="mt-1 block text-sm text-ink-soft">Kare JPG, PNG ya da WEBP, en fazla 3 MB</span>
+                <span className="mt-1 block text-sm text-ink-soft">Kare JPG, PNG ya da WEBP, en fazla 3 MB. Yapay zekâyla da üretebilirsin.</span>
               </span>
             )}
           </label>

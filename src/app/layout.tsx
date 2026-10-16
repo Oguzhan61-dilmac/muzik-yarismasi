@@ -50,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </p>
               </div>
               <div className="max-w-sm text-sm text-ink-soft sm:text-right">
-                <p>Şarkıların ve kapakların tüm hakları sahiplerine aittir. Sorun yaşarsan yarışma ekibine yaz.</p>
+                <p>Şarkılar ve kapaklar katılımcıların yapay zekâ araçlarıyla ürettiği eserlerdir. Sorun yaşarsan yarışma ekibine yaz.</p>
                 <p className="mt-1">
                   <a href="/kurallar">Kurallar</a>
                   <span aria-hidden="true" className="mx-2">/</span>

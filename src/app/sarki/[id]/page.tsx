@@ -56,6 +56,11 @@ async function Song({ params }: Props) {
           <h1 className="display misprint mt-3 text-[clamp(3rem,8vw,5.5rem)] [overflow-wrap:anywhere]">{entry.title}</h1>
           <p className="mt-2 text-2xl">{entry.artistName}</p>
           {entry.genre && <p className="mt-1 text-ink-soft">{entry.genre}</p>}
+          {entry.aiTools && (
+            <p className="mt-4 max-w-prose">
+              <span className="font-semibold">Yapay zekâ araçları:</span> {entry.aiTools}
+            </p>
+          )}
 
           {entry.description && <Paragraphs text={entry.description} className="mt-6 max-w-prose text-lg" />}
 

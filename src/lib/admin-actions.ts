@@ -142,7 +142,12 @@ export async function inviteMember(_: ActionResult | null, form: FormData): Prom
   const supabase = await createClient();
   const { error } = await supabase.from("role_invites").upsert({ email, role }, { onConflict: "email" });
   if (error) return { ok: false, message: `Eklenemedi: ${error.message}` };
-  const { data: updated } = await supabase.from("profiles").update({ role }).eq("email", email).select("id");
+  const { data: updated, error: updateError } = await supabase
+    .from("profiles")
+    .update({ role })
+    .eq("email", email)
+    .select("id");
+  if (updateError) return { ok: false, message: `Rol değiştirilemedi: ${updateError.message}` };
   refresh();
   return {
     ok: true,
@@ -161,8 +166,10 @@ export async function removeMember(email: string): Promise<ActionResult> {
   }
   const target = email.trim().toLowerCase();
   const supabase = await createClient();
-  await supabase.from("role_invites").delete().eq("email", target);
-  await supabase.from("profiles").update({ role: "user" }).eq("email", target);
+  const { error: inviteError } = await supabase.from("role_invites").delete().eq("email", target);
+  if (inviteError) return { ok: false, message: `Çıkarılamadı: ${inviteError.message}` };
+  const { error } = await supabase.from("profiles").update({ role: "user" }).eq("email", target);
   refresh();
+  if (error) return { ok: false, message: `Çıkarılamadı: ${error.message}` };
   return { ok: true };
 }

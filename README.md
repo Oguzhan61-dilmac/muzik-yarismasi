@@ -1,6 +1,6 @@
-# Online Müzik Yarışması
+# AI Müzik Yarışması
 
-Topluluklar için online müzik yarışması sitesi. Katılımcılar şarkılarını ve kapak görsellerini yükler. Jüri her şarkıyı kriterlere göre puanlar, yönetici puan sıralamasına bakarak finalistleri seçer. Finalistler herkese açılır ve kazananı giriş yapan herkesin oyu belirler.
+Topluluklar için yapay zekâ müzik yarışması sitesi. Katılımcılar yapay zekâ araçlarıyla (Suno, Udio ve benzerleri) ürettikleri şarkıları, kapak görsellerini ve kullandıkları araçları yükler. Jüri her şarkıyı kriterlere göre puanlar, yönetici puan sıralamasına bakarak finalistleri seçer. Finalistler herkese açılır ve kazananı giriş yapan herkesin oyu belirler.
 
 **Yarışmanın aşamaları:** Başvuru → Jüri değerlendirmesi → Final oylaması → Sonuçlar. Aşamaları yönetim panelinden tek tıkla değiştirirsin.
 
@@ -66,7 +66,7 @@ http://localhost:3000 adresini aç. Supabase bağlı olmadığı için site örn
 1. [supabase.com](https://supabase.com) → **New project**. Bölge olarak **Frankfurt (eu-central-1)** Türkiye'ye en yakın olanı.
 2. Sol menü → **SQL Editor** → **New query**.
 3. Bu depodaki `supabase/schema.sql` dosyasının tamamını yapıştır.
-4. **Çalıştırmadan önce** dosyadaki `ornek@gmail.com` adresini kendi Google adresinle değiştir. Bu adresle ilk giriş yaptığında otomatik yönetici olursun.
+4. **Çalıştırmadan önce** dosyadaki iki `ornek@gmail.com` adresini kendi Google adresinle değiştir. Bu adresle ilk giriş yaptığında otomatik yönetici olursun; site sahibi olduğun için yöneticiliğini sitedeki başka bir yönetici kaldıramaz. Başka kişilere yöneticilik ya da jürilik vermek için Yönetim → Ekip sayfasını kullan.
 5. **Run**. "Success" görmelisin. Dosya tekrar çalıştırılabilir, verileri silmez.
 6. **Project Settings → API Keys** bölümünden iki değeri kopyala:
    - **Project URL** (`https://xxxx.supabase.co`)

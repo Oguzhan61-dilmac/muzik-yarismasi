@@ -15,14 +15,15 @@ export async function GET() {
   const [entries, criteria] = await Promise.all([getAllEntries(), getCriteria()]);
   const num = (n: number | null | undefined) => (n == null ? "" : n.toLocaleString("tr-TR", { maximumFractionDigits: 2 }));
   const header = [
-    "Şarkı", "Sanatçı", "Tür", "Gönderen", "E-posta", "Durum",
+    "Şarkı", "Sanatçı", "Tür", "Yapay zekâ araçları", "Gönderen", "E-posta", "Durum",
     "Jüri puanı", "Puan veren jüri", ...criteria.map((c) => `Jüri: ${c.name}`),
-    "Oy", "Gönderim tarihi", "Hikâyesi", "Sayfa",
+    "Oy", "Gönderim tarihi", "Nasıl üretildi", "Sayfa",
   ];
   const rows = entries.map((e) => [
     e.title,
     e.artistName,
     e.genre,
+    e.aiTools,
     e.ownerName,
     e.ownerEmail,
     STATUS_LABEL[e.status],

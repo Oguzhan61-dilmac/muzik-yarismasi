@@ -38,7 +38,11 @@ async function Team({ viewer }: { viewer: Viewer }) {
               <span className={`rounded-full border-2 px-2.5 py-0.5 text-sm font-bold ${m.role === "admin" ? "border-ink bg-ink text-paper" : "border-ink"}`}>
                 {m.role === "admin" ? "Yönetici" : "Jüri"}
               </span>
-              {m.email.toLowerCase() !== viewer.email?.toLowerCase() && <RemoveMemberButton email={m.email} />}
+              {m.owner ? (
+                <span className="text-sm text-ink-soft">Site sahibi</span>
+              ) : (
+                m.email.toLowerCase() !== viewer.email?.toLowerCase() && <RemoveMemberButton email={m.email} />
+              )}
             </li>
           ))}
         </ul>

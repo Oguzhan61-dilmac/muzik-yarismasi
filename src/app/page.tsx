@@ -104,10 +104,11 @@ async function Home() {
         {(phase === "upcoming" || phase === "submissions") && (
           <section aria-labelledby="katilim">
             <SectionTitle id="katilim">Katılmak için gerekenler</SectionTitle>
-            <ul className="grid gap-px border-2 border-ink bg-ink sm:grid-cols-3">
+            <ul className="grid gap-px border-2 border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
               {[
-                ["Şarkın", "MP3 ya da M4A biçiminde, en fazla 10 MB. Sana ya da grubuna ait olmalı."],
-                ["Kapak görselin", "Kare bir JPG, PNG ya da WEBP, en fazla 3 MB. Finalde şarkının yüzü bu olacak."],
+                ["Yapay zekâyla ürettiğin şarkı", "Suno, Udio ya da başka bir araçla senin ürettiğin bir şarkı. MP3 ya da M4A, en fazla 10 MB."],
+                ["Kapak görselin", "Kare bir JPG, PNG ya da WEBP, en fazla 3 MB. Yapay zekâyla da üretebilirsin; finalde şarkının yüzü bu olacak."],
+                ["Kullandığın araçlar", "Başvururken müzik, söz ve kapak için hangi yapay zekâ araçlarını kullandığını yazarsın."],
                 ["Google hesabın", "Başvuru ve oy için Google ile giriş yapılır; şifre gerekmez."],
               ].map(([t, d]) => (
                 <li key={t} className="bg-sheet p-5">

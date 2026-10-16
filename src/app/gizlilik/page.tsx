@@ -10,14 +10,14 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: "Kim işletiyor?",
     body: [
-      "Bu site, HSD İnönü (Huawei Student Developers, İnönü Üniversitesi) topluluğunun düzenlediği online müzik yarışması için yapıldı ve topluluk tarafından işletiliyor.",
+      "Bu site, HSD İnönü (Huawei Student Developers, İnönü Üniversitesi) topluluğunun düzenlediği yapay zekâ müzik yarışması için yapıldı ve topluluk tarafından işletiliyor.",
     ],
   },
   {
     title: "Hangi bilgileri topluyoruz?",
     body: [
       "Google ile giriş yaptığında Google'ın bizimle paylaştığı adın, e-posta adresin ve profil fotoğrafın. Google hesabının şifresini hiçbir zaman görmüyoruz.",
-      "Başvuru yaparsan gönderdiğin şarkı dosyası, kapak görseli ve formda yazdıkların: şarkı adı, sanatçı adı, tür ve şarkının hikâyesi.",
+      "Başvuru yaparsan gönderdiğin şarkı dosyası, kapak görseli ve formda yazdıkların: şarkı adı, sanatçı adı, tür, kullandığın yapay zekâ araçları ve şarkıyı nasıl ürettiğine dair notun.",
       "Oy verirsen hangi finaliste oy verdiğin. Jüri üyesiysen şarkılara verdiğin puanlar ve notların.",
     ],
   },

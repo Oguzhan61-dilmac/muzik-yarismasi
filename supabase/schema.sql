@@ -1,9 +1,10 @@
 -- =============================================================================
--- Online Müzik Yarışması — Supabase veritabanı şeması
+-- AI Müzik Yarışması — Supabase veritabanı şeması
 --
 -- Kurulum: Supabase → SQL Editor → New query → bu dosyanın tamamını yapıştır → Run.
--- ÇALIŞTIRMADAN ÖNCE: aşağıdaki "YÖNETİCİ" bölümündeki ornek@gmail.com adresini
--- kendi Google adresinle değiştir. O adresle ilk giriş yaptığında yönetici olursun.
+-- ÇALIŞTIRMADAN ÖNCE: aşağıdaki "YÖNETİCİ" bölümündeki iki ornek@gmail.com adresini
+-- kendi Google adresinle değiştir. O adresle ilk giriş yaptığında yönetici olursun;
+-- site sahibi olarak yöneticiliğini sitedeki başka bir yönetici kaldıramaz.
 --
 -- Dosya tekrar çalıştırılabilir; mevcut verileri silmez. Güncelleme gelince
 -- yeni sürümü aynı şekilde yapıştırıp çalıştırman yeterli.
@@ -44,19 +45,29 @@ create table if not exists public.role_invites (
   created_at timestamptz not null default now()
 );
 
+-- Site sahipleri: yöneticiliklerini sitedeki başka bir yönetici kaldıramaz.
+-- Bu listeyi yalnızca SQL Editor'den değiştirebilirsin (sitede hiçbir rolün izni yok).
+create table if not exists public.owners (
+  email text primary key check (email = lower(btrim(email)))
+);
+
 -- Yarışma ayarları (tek satır)
 create table if not exists public.settings (
   id                   int primary key default 1 check (id = 1),
-  title                text not null default 'Online Müzik Yarışması' check (char_length(title) between 1 and 80),
-  tagline              text not null default 'Şarkını gönder, finale kal, oyları topla.' check (char_length(tagline) <= 140),
+  title                text not null default 'AI Müzik Yarışması' check (char_length(title) between 1 and 80),
+  tagline              text not null default 'Yapay zekâyla şarkını üret, finale kal, oyları topla.' check (char_length(tagline) <= 140),
   description          text not null default
-    'Kendi bestelediğin ya da grubunla kaydettiğin bir şarkıyı, kapak görseliyle birlikte gönder. '
+    'Yapay zekâ araçlarıyla (Suno, Udio ve benzerleri) ürettiğin bir şarkıyı kapak görseliyle birlikte gönder. '
+    'Fikir, söz ve seçimler senden; yapay zekâ senin enstrümanın. '
     'Jüri tüm başvuruları dinleyip puanlar ve finalistleri seçer; kazananı finalistler arasından herkesin oyu belirler.'
     check (char_length(description) <= 2000),
   rules                text not null default
-    'Gönderilen şarkı sana ya da grubuna ait olmalı; başkasının eserini gönderemezsin.' || chr(10) ||
+    'Şarkı yapay zekâ araçlarıyla üretilmiş olmalı (Suno, Udio ve benzerleri). Başvururken hangi araçları kullandığını yazman gerekir.' || chr(10) ||
+    'Şarkıyı sen üretmiş olmalısın; başkasının ürettiği ya da internette bulduğun bir şarkıyı gönderemezsin.' || chr(10) ||
+    'Kullandığın araçların koşulları şarkıyı bu yarışmada paylaşmana izin vermeli.' || chr(10) ||
+    'Gerçek bir sanatçının sesini taklit eden ya da var olan bir şarkıyı kopyalayan başvurular yarışma dışı bırakılır.' || chr(10) ||
     'Her katılımcı en fazla 1 şarkıyla katılabilir.' || chr(10) ||
-    'Şarkı MP3 ya da M4A biçiminde, en fazla 10 MB olmalı. Kapak görseli kare olmalı.' || chr(10) ||
+    'Şarkı MP3 ya da M4A biçiminde, en fazla 10 MB olmalı. Kapak görseli kare olmalı; kapağı da yapay zekâyla üretebilirsin.' || chr(10) ||
     'Nefret söylemi, hakaret ve müstehcenlik içeren başvurular yarışma dışı bırakılır.' || chr(10) ||
     'Jüri şarkıları isimleri görmeden puanlar; finalistleri jüri puanlarına göre yarışma ekibi belirler.' || chr(10) ||
     'Kazananı finalistler arasından halk oylaması belirler. Her Google hesabı bir oy kullanabilir; oylama bitene kadar oyunu değiştirebilirsin.'
@@ -83,6 +94,8 @@ create table if not exists public.entries (
   status      text not null default 'submitted' check (status in ('submitted', 'finalist', 'disqualified')),
   created_at  timestamptz not null default now()
 );
+-- Şarkıyı üretirken kullanılan yapay zekâ araçları (uygulama yeni başvurularda zorunlu tutar)
+alter table public.entries add column if not exists ai_tools text check (char_length(ai_tools) <= 120);
 create index if not exists entries_user_id_idx on public.entries (user_id);
 create index if not exists entries_status_idx on public.entries (status);
 
@@ -105,10 +118,10 @@ create table if not exists public.criteria (
 );
 insert into public.criteria (name, description, weight, sort_order)
 select * from (values
-  ('Özgünlük', 'Şarkının ne kadar özgün ve akılda kalıcı olduğu.', 1.0, 1),
-  ('Prodüksiyon', 'Kayıt, miks ve genel ses kalitesi.', 1.0, 2),
-  ('İcra', 'Vokal ya da enstrüman performansı.', 1.0, 3),
-  ('Söz ve kompozisyon', 'Sözlerin, melodinin ve şarkı yapısının gücü.', 1.0, 4),
+  ('Fikir ve söz', 'Şarkının fikri, teması ve sözleri; ne kadar özgün ve akılda kalıcı olduğu.', 1.0, 1),
+  ('Müzikalite', 'Melodi, armoni ve şarkı yapısı; parçanın baştan sona tutarlı ilerlemesi.', 1.0, 2),
+  ('Ses kalitesi', 'Miks ve genel ses; bozulma, cızırtı, kopukluk gibi yapay zekâ izlerinin azlığı.', 1.0, 3),
+  ('Yaratıcı AI kullanımı', 'Araçların ne kadar emek ve yaratıcılıkla kullanıldığı: prompt, deneme, düzenleme, ek prodüksiyon.', 1.0, 4),
   ('Kapak görseli', 'Kapağın şarkıyla uyumu ve görsel etkisi.', 0.5, 5)
 ) as seed(name, description, weight, sort_order)
 where not exists (select 1 from public.criteria);
@@ -133,9 +146,10 @@ create table if not exists public.judge_notes (
 );
 
 -- ----------------------------------------------------------------------------
--- YÖNETİCİ: tırnakların arasına kendi Google adresini yaz
+-- YÖNETİCİ: iki satırda da tırnakların arasına kendi Google adresini yaz
 -- ----------------------------------------------------------------------------
 insert into public.role_invites (email, role) values (lower(btrim('ornek@gmail.com')), 'admin') on conflict (email) do nothing;
+insert into public.owners (email) values (lower(btrim('ornek@gmail.com'))) on conflict (email) do nothing;
 
 -- Davet listesindeki adresle daha önce giriş yapmış olanlara rolünü ver
 update public.profiles p
@@ -209,6 +223,39 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- ----------------------------------------------------------------------------
+-- Site sahibinin yöneticiliği sitedeki başka bir yönetici tarafından kaldırılamaz.
+-- SQL Editor'den (oturum açmış bir kullanıcı olmadan) yapılan değişiklikler serbesttir.
+-- ----------------------------------------------------------------------------
+create or replace function public.protect_owner()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare
+  demoted boolean;
+begin
+  if tg_op = 'DELETE' then
+    demoted := true;
+  else
+    demoted := old.role = 'admin' and new.role is distinct from 'admin';
+  end if;
+  if demoted and auth.uid() is not null
+     and exists (select 1 from public.owners o where o.email = lower(btrim(old.email))) then
+    raise exception 'Site sahibinin yöneticiliği kaldırılamaz.' using errcode = '42501';
+  end if;
+  if tg_op = 'DELETE' then
+    return old;
+  end if;
+  return new;
+end $$;
+
+drop trigger if exists protect_owner on public.profiles;
+create trigger protect_owner
+  before update of role on public.profiles
+  for each row execute function public.protect_owner();
+drop trigger if exists protect_owner on public.role_invites;
+create trigger protect_owner
+  before update or delete on public.role_invites
+  for each row execute function public.protect_owner();
+
+-- ----------------------------------------------------------------------------
 -- Satır düzeyi güvenlik (RLS)
 -- ----------------------------------------------------------------------------
 alter table public.profiles     enable row level security;
@@ -219,6 +266,7 @@ alter table public.votes        enable row level security;
 alter table public.criteria     enable row level security;
 alter table public.scores       enable row level security;
 alter table public.judge_notes  enable row level security;
+alter table public.owners       enable row level security;
 
 -- Profiller: herkes kendini, yönetici herkesi görür; rolü yalnızca yönetici değiştirir
 drop policy if exists "profil okuma" on public.profiles;
@@ -440,10 +488,18 @@ begin
 end;
 $$;
 
-revoke execute on function public.jury_save(uuid, jsonb, text), public.jury_results(), public.jury_progress()
-  from public, anon;
-grant execute on function public.jury_save(uuid, jsonb, text), public.jury_results(), public.jury_progress()
-  to authenticated;
+-- Site sahiplerinin adresleri (Ekip sayfasında işaretlemek için; yalnızca yönetici)
+create or replace function public.owner_emails()
+returns setof text
+language sql stable security definer set search_path = ''
+as $$
+  select o.email from public.owners o where public.is_admin();
+$$;
+
+revoke execute on function public.jury_save(uuid, jsonb, text), public.jury_results(), public.jury_progress(),
+  public.owner_emails() from public, anon;
+grant execute on function public.jury_save(uuid, jsonb, text), public.jury_results(), public.jury_progress(),
+  public.owner_emails() to authenticated;
 grant execute on function public.vote_results() to anon, authenticated;
 
 -- ----------------------------------------------------------------------------

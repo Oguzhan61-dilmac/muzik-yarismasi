@@ -42,10 +42,10 @@ export async function previewScores(): Promise<PreviewScores> {
 // ---------------------------------------------------------------- satır dönüştürme
 type EntryRow = {
   id: string; user_id: string; title: string; artist_name: string; genre: string | null;
-  description: string | null; audio_path: string; cover_path: string; status: EntryStatus;
+  ai_tools: string | null; description: string | null; audio_path: string; cover_path: string; status: EntryStatus;
   created_at: string; profiles?: { full_name: string | null; email: string | null } | null;
 };
-const ENTRY_COLUMNS = "id,user_id,title,artist_name,genre,description,audio_path,cover_path,status,created_at";
+const ENTRY_COLUMNS = "id,user_id,title,artist_name,genre,ai_tools,description,audio_path,cover_path,status,created_at";
 
 function mapEntry(r: EntryRow, audioUrl: string | null): Entry {
   return {
@@ -54,6 +54,7 @@ function mapEntry(r: EntryRow, audioUrl: string | null): Entry {
     title: r.title,
     artistName: r.artist_name,
     genre: r.genre,
+    aiTools: r.ai_tools,
     description: r.description,
     coverUrl: coverPublicUrl(r.cover_path),
     audioUrl,
@@ -86,7 +87,7 @@ export const getSettings = cache(async (): Promise<Settings> => {
     // Site çökmesin; aşamayı "yakında"ya çekip kurulum uyarısı göster.
     return {
       ...demoSettings("upcoming"),
-      title: "Müzik Yarışması",
+      title: "AI Müzik Yarışması",
       setupError:
         "Veritabanına ulaşılamadı. Supabase'de supabase/schema.sql dosyasını çalıştırdığından ve " +
         "ortam değişkenlerinin doğru olduğundan emin ol." + (error?.message ? ` (${error.message})` : ""),
@@ -324,10 +325,12 @@ export async function getStats(): Promise<{ entries: number; finalists: number; 
 export async function getTeam(): Promise<TeamMember[]> {
   if (isPreview) return DEMO_TEAM;
   const supabase = await createClient();
-  const [{ data: profiles }, { data: invites }] = await Promise.all([
+  const [{ data: profiles }, { data: invites }, { data: owners }] = await Promise.all([
     supabase.from("profiles").select("email,full_name,role").in("role", ["jury", "admin"]),
     supabase.from("role_invites").select("email,role"),
+    supabase.rpc("owner_emails"),
   ]);
+  const ownerSet = new Set(((owners ?? []) as string[]).map((e) => e.toLowerCase()));
   const members = new Map<string, TeamMember>();
   for (const i of invites ?? []) {
     members.set(i.email.toLowerCase(), { email: i.email, name: null, role: i.role, joined: false });
@@ -336,5 +339,6 @@ export async function getTeam(): Promise<TeamMember[]> {
     if (!p.email) continue;
     members.set(p.email.toLowerCase(), { email: p.email, name: p.full_name, role: p.role, joined: true });
   }
+  for (const [email, m] of members) if (ownerSet.has(email)) m.owner = true;
   return [...members.values()].sort((a, b) => (a.role === b.role ? a.email.localeCompare(b.email) : a.role === "admin" ? -1 : 1));
 }

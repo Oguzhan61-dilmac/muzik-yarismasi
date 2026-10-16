@@ -129,6 +129,11 @@ async function EntriesList({ searchParams }: Props) {
                   {e.artistName}
                   {e.genre && <span className="ml-2">{e.genre}</span>}
                 </p>
+                {e.aiTools && (
+                  <p className="mt-1 text-sm">
+                    <span className="font-semibold">Araçlar:</span> {e.aiTools}
+                  </p>
+                )}
                 {(e.ownerName || e.ownerEmail) && (
                   <p className="mt-1 truncate text-sm text-ink-soft">
                     Gönderen {e.ownerName ?? ""} {e.ownerEmail && <span>({e.ownerEmail})</span>}, {formatShortDate(e.createdAt)}
@@ -136,7 +141,7 @@ async function EntriesList({ searchParams }: Props) {
                 )}
                 {e.description && (
                   <details className="mt-2 text-sm">
-                    <summary className="cursor-pointer font-semibold">Hikâyesi</summary>
+                    <summary className="cursor-pointer font-semibold">Nasıl üretildi?</summary>
                     <p className="mt-1 max-w-prose whitespace-pre-line">{e.description}</p>
                   </details>
                 )}

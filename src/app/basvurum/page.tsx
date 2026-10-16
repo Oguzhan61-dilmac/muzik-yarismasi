@@ -85,6 +85,11 @@ async function MyEntries({ searchParams }: Props) {
                   {e.artistName}
                   {e.genre && <span className="ml-2">{e.genre}</span>}
                 </p>
+                {e.aiTools && (
+                  <p className="mt-1 text-sm">
+                    <span className="font-semibold">Yapay zekâ araçları:</span> {e.aiTools}
+                  </p>
+                )}
                 <p className="mt-4">{statusText(e, settings.phase)}</p>
                 <p className="mt-2 text-sm text-ink-soft">Gönderildi: {formatDate(e.createdAt)}</p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">

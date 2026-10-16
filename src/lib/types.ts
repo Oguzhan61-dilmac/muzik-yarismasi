@@ -54,6 +54,8 @@ export type Entry = {
   title: string;
   artistName: string;
   genre: string | null;
+  /** Şarkıyı üretirken kullanılan yapay zekâ araçları (ör. "Suno, kapak Midjourney") */
+  aiTools: string | null;
   description: string | null;
   coverUrl: string;
   audioUrl: string | null;
@@ -93,6 +95,7 @@ export type TeamMember = {
   name: string | null;
   role: Exclude<Role, "user">;
   joined: boolean; // siteye giriş yapmış mı
+  owner?: boolean; // site sahibi: yöneticiliği sitede kaldırılamaz
 };
 
 export type ActionResult = { ok: true; message?: string } | { ok: false; message: string; needLogin?: boolean };

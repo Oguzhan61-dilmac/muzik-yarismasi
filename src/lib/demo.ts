@@ -17,15 +17,19 @@ export const DEMO_VIEWER: Viewer = {
 
 export function demoSettings(phase: Phase): Settings {
   return {
-    title: "Online Müzik Yarışması",
-    tagline: "Şarkını gönder, finale kal, oyları topla.",
+    title: "AI Müzik Yarışması",
+    tagline: "Yapay zekâyla şarkını üret, finale kal, oyları topla.",
     description:
-      "Kendi bestelediğin ya da grubunla kaydettiğin bir şarkıyı, kapak görseliyle birlikte gönder. " +
+      "Yapay zekâ araçlarıyla (Suno, Udio ve benzerleri) ürettiğin bir şarkıyı kapak görseliyle birlikte gönder. " +
+      "Fikir, söz ve seçimler senden; yapay zekâ senin enstrümanın. " +
       "Jüri tüm başvuruları dinleyip puanlar ve finalistleri seçer; kazananı finalistler arasından herkesin oyu belirler.",
     rules:
-      "Gönderilen şarkı sana ya da grubuna ait olmalı; başkasının eserini gönderemezsin.\n" +
+      "Şarkı yapay zekâ araçlarıyla üretilmiş olmalı (Suno, Udio ve benzerleri). Başvururken hangi araçları kullandığını yazman gerekir.\n" +
+      "Şarkıyı sen üretmiş olmalısın; başkasının ürettiği ya da internette bulduğun bir şarkıyı gönderemezsin.\n" +
+      "Kullandığın araçların koşulları şarkıyı bu yarışmada paylaşmana izin vermeli.\n" +
+      "Gerçek bir sanatçının sesini taklit eden ya da var olan bir şarkıyı kopyalayan başvurular yarışma dışı bırakılır.\n" +
       "Her katılımcı en fazla 1 şarkıyla katılabilir.\n" +
-      "Şarkı MP3 ya da M4A biçiminde, en fazla 10 MB olmalı. Kapak görseli kare olmalı.\n" +
+      "Şarkı MP3 ya da M4A biçiminde, en fazla 10 MB olmalı. Kapak görseli kare olmalı; kapağı da yapay zekâyla üretebilirsin.\n" +
       "Nefret söylemi, hakaret ve müstehcenlik içeren başvurular yarışma dışı bırakılır.\n" +
       "Jüri şarkıları isimleri görmeden puanlar; finalistleri jüri puanlarına göre yarışma ekibi belirler.\n" +
       "Kazananı finalistler arasından halk oylaması belirler. Her Google hesabı bir oy kullanabilir; oylama bitene kadar oyunu değiştirebilirsin.",
@@ -39,10 +43,10 @@ export function demoSettings(phase: Phase): Settings {
 }
 
 export const DEMO_CRITERIA: Criterion[] = [
-  { id: "1", name: "Özgünlük", description: "Şarkının ne kadar özgün ve akılda kalıcı olduğu.", weight: 1 },
-  { id: "2", name: "Prodüksiyon", description: "Kayıt, miks ve genel ses kalitesi.", weight: 1 },
-  { id: "3", name: "İcra", description: "Vokal ya da enstrüman performansı.", weight: 1 },
-  { id: "4", name: "Söz ve kompozisyon", description: "Sözlerin, melodinin ve şarkı yapısının gücü.", weight: 1 },
+  { id: "1", name: "Fikir ve söz", description: "Şarkının fikri, teması ve sözleri; ne kadar özgün ve akılda kalıcı olduğu.", weight: 1 },
+  { id: "2", name: "Müzikalite", description: "Melodi, armoni ve şarkı yapısı; parçanın baştan sona tutarlı ilerlemesi.", weight: 1 },
+  { id: "3", name: "Ses kalitesi", description: "Miks ve genel ses; bozulma, cızırtı, kopukluk gibi yapay zekâ izlerinin azlığı.", weight: 1 },
+  { id: "4", name: "Yaratıcı AI kullanımı", description: "Araçların ne kadar emek ve yaratıcılıkla kullanıldığı: prompt, deneme, düzenleme, ek prodüksiyon.", weight: 1 },
   { id: "5", name: "Kapak görseli", description: "Kapağın şarkıyla uyumu ve görsel etkisi.", weight: 0.5 },
 ];
 
@@ -79,33 +83,34 @@ function cover(i: number, shape: "circles" | "stripes" | "sun" | "grid"): string
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-type DemoSeed = [title: string, artist: string, genre: string, status: Entry["status"], shape: Parameters<typeof cover>[1], votes: number, desc: string];
+type DemoSeed = [title: string, artist: string, genre: string, status: Entry["status"], shape: Parameters<typeof cover>[1], votes: number, aiTools: string, desc: string];
 
 const SEEDS: DemoSeed[] = [
-  ["Gece Vardiyası", "Kuzey Rüzgârı", "Rock", "finalist", "stripes", 412,
-    "Yurt odasında kaydettiğimiz ilk şarkı. Gece çalışan herkese."],
-  ["Sahil Yolu", "Deniz & Arda", "Akustik", "submitted", "sun", 0,
-    "İki gitar, bir yaz akşamı."],
-  ["Beton Çiçek", "MC Tuna", "Rap / Hip-hop", "finalist", "grid", 538,
-    "Büyüdüğüm mahalleye bir mektup."],
-  ["Kırmızı Işık", "Selin Ay", "Pop", "finalist", "circles", 297,
-    "Trafikte beklerken aklıma gelen nakarat."],
-  ["Sinyal Kaybı", "Modem 56k", "Elektronik", "finalist", "grid", 185,
-    "Eski bir modemin bağlanma sesinden örneklenmiş bir parça."],
-  ["Dört Mevsim Avlu", "Avlu Trio", "Caz", "disqualified", "circles", 0,
-    "Kontrbas, piyano, davul."],
-  ["Yayla Yolu", "Ezgi Karaca", "Türk halk müziği", "finalist", "sun", 351,
-    "Babaannemin söylediği bir ezgiden ilham aldım."],
-  ["Son Otobüs", "Plak Kulübü", "Pop", "submitted", "stripes", 0,
+  ["Gece Vardiyası", "Kuzey Rüzgârı", "Rock", "finalist", "stripes", 412, "Suno, kapak Midjourney",
+    "Sözleri gece vardiyasından dönerken yazdım; Suno'da kırk denemeden sonra bu sürüm çıktı."],
+  ["Sahil Yolu", "Deniz & Arda", "Akustik", "submitted", "sun", 0, "Udio, gitarlar canlı kayıt",
+    "İki gitar, bir yaz akşamı. Gitarları kendimiz çaldık, vokali Udio üretti."],
+  ["Beton Çiçek", "MC Tuna", "Rap / Hip-hop", "finalist", "grid", 538, "Suno, sözler bana ait, miks FL Studio",
+    "Büyüdüğüm mahalleye bir mektup. Sözler benim, beat yapay zekâdan."],
+  ["Kırmızı Işık", "Selin Ay", "Pop", "finalist", "circles", 297, "Udio, kapak DALL·E",
+    "Trafikte beklerken aklıma gelen nakaratı yapay zekâyla şarkıya çevirdim."],
+  ["Sinyal Kaybı", "Modem 56k", "Elektronik", "finalist", "grid", 185, "Stable Audio, düzenleme Ableton",
+    "Eski bir modemin bağlanma sesini örnek olarak verip üstüne parça kurdum."],
+  ["Dört Mevsim Avlu", "Avlu Trio", "Caz", "disqualified", "circles", 0, "Suno",
+    "Kontrbas, piyano, davul; hepsi tek bir prompttan."],
+  ["Yayla Yolu", "Ezgi Karaca", "Türk halk müziği", "finalist", "sun", 351, "Suno (mırıldandığım kayıttan), kapak Midjourney",
+    "Babaannemin söylediği bir ezgiyi mırıldanıp yapay zekâya verdim."],
+  ["Son Otobüs", "Plak Kulübü", "Pop", "submitted", "stripes", 0, "Udio, sözler ChatGPT ile birlikte",
     "Kampüsten kalkan son otobüsü kaçıranlara."],
 ];
 
-export const DEMO_ENTRIES: Entry[] = SEEDS.map(([title, artistName, genre, status, shape, votes, description], i) => ({
+export const DEMO_ENTRIES: Entry[] = SEEDS.map(([title, artistName, genre, status, shape, votes, aiTools, description], i) => ({
   id: `00000000-0000-4000-8000-00000000000${i + 1}`,
   userId: i === 1 ? DEMO_VIEWER.id : `demo-user-${i}`,
   title,
   artistName,
   genre,
+  aiTools,
   description,
   coverUrl: cover(i, shape),
   audioUrl: `demo:${i}`,
@@ -151,7 +156,7 @@ export const DEMO_PROGRESS: JudgeProgress[] = [
 ];
 
 export const DEMO_TEAM: TeamMember[] = [
-  { email: "sen@ornek.com", name: "Önizleme Kullanıcısı", role: "admin", joined: true },
+  { email: "sen@ornek.com", name: "Önizleme Kullanıcısı", role: "admin", joined: true, owner: true },
   { email: "juri.uyesi@ornek.com", name: "Jüri Üyesi", role: "jury", joined: true },
   { email: "davetli.juri@ornek.com", name: null, role: "jury", joined: false },
 ];

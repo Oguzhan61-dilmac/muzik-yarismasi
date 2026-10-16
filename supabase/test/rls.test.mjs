@@ -13,7 +13,7 @@ const db = new PGlite();
 
 await db.exec(readFileSync(join(here, "supabase-stub.sql"), "utf8"));
 const schema = readFileSync(join(here, "..", "schema.sql"), "utf8")
-  .replace("'ornek@gmail.com'", "'yonetici@ornek.com'")
+  .replaceAll("'ornek@gmail.com'", "'yonetici@ornek.com'")
   .replace("on conflict (email) do nothing;", "on conflict (email) do nothing;\ninsert into public.role_invites values ('jury@ornek.com', 'jury') on conflict do nothing;");
 await db.exec(schema);
 await db.exec(schema); // tekrar çalıştırılabilir olmalı
@@ -120,6 +120,20 @@ await test("yönetici rol değiştirebilir ve davet ekleyebilir; kullanıcı ekl
   await as("admin", "insert into public.role_invites values ('yeni@ornek.com', 'jury')");
   await fails("alice", "insert into public.role_invites values ('alice2@ornek.com', 'admin')");
   assert.equal((await rows("alice", "select * from public.role_invites")).length, 0);
+});
+await test("site sahibinin yöneticiliğini başka bir yönetici kaldıramaz", async () => {
+  await superuser("update public.profiles set role = 'admin' where id = $1", [U.bob]);
+  await fails("bob", "update public.profiles set role = 'user' where id = $1", [U.admin]);
+  await fails("bob", "update public.role_invites set role = 'jury' where email = 'yonetici@ornek.com'");
+  await fails("bob", "delete from public.role_invites where email = 'yonetici@ornek.com'");
+  await fails("bob", "insert into public.owners values ('bob@ornek.com')");
+  assert.equal((await rows(null, "select role from public.profiles where id = $1", [U.admin]))[0].role, "admin");
+  // sahip diğer yöneticiyi çıkarabilir; SQL Editor'den (oturumsuz) her şey değiştirilebilir
+  await as("admin", "update public.profiles set role = 'user' where id = $1", [U.bob]);
+  assert.equal((await rows(null, "select role from public.profiles where id = $1", [U.bob]))[0].role, "user");
+  await superuser("select set_config('request.jwt.claim.sub', '', false)");
+  await superuser("update public.profiles set role = 'jury' where id = $1", [U.admin]);
+  await superuser("update public.profiles set role = 'admin' where id = $1", [U.admin]);
 });
 
 console.log("\nAyarlar");
