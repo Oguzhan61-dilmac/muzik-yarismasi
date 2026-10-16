@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+/*
+  Görsel kimlik: iki renkli risograf afiş.
+  Kağıt zemin, koyu mavi mürekkep, fosforlu pembe. Kapaklar keskin kare.
+*/
+@theme {
+  --color-paper: #f4f4f0;
+  --color-sheet: #ffffff;
+  --color-ink: #1f2a6b;
+  --color-ink-soft: #565d8c;
+  --color-pink: #ff48b0;
+  --color-pink-deep: #c2186f;
+  --color-blue: #0078bf;
+  --color-yellow: #ffe800;
+
+  --font-display: "Big Shoulders Variable", "Arial Narrow", sans-serif;
+  --font-sans: "Schibsted Grotesk Variable", system-ui, sans-serif;
+}
+
+/* Temel öğe stilleri "base" katmanında: böylece Tailwind sınıfları (ör. text-paper) bunları ezebilir.
+   Katmansız stiller her katmanlı stilin önüne geçtiği için aktif filtre etiketlerinin yazısı görünmüyordu. */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ::selection {
+    background: var(--color-pink);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-blue);
+    outline-offset: 2px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-color: var(--color-pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+}
+
+/* Afiş başlığı: pembe mürekkep, maviyle hafif kayık basılmış gibi */
+.misprint {
+  text-shadow: 0.06em 0.045em 0 var(--color-pink);
+}
+
+/* Risograf grenini taklit eden ince doku */
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1.1rem;
+    border: 2px solid var(--color-ink);
+    border-radius: 2px;
+    font-weight: 650;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 80ms ease, box-shadow 80ms ease, background-color 120ms ease;
+    user-select: none;
+  }
+  .btn-primary {
+    background: var(--color-pink);
+    color: var(--color-ink);
+    box-shadow: 3px 3px 0 var(--color-blue);
+  }
+  .btn-primary:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--color-blue);
+  }
+  .btn-primary:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--color-blue);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .btn-ghost:hover {
+    background: var(--color-sheet);
+  }
+  .btn-quiet {
+    border-color: transparent;
+    background: transparent;
+    padding-inline: 0.5rem;
+    color: var(--color-ink-soft);
+  }
+  .btn-quiet:hover {
+    color: var(--color-ink);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .field-label {
+    display: block;
+    font-weight: 650;
+    margin-bottom: 0.35rem;
+  }
+  .field-help {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+    margin-top: 0.3rem;
+  }
+  .input {
+    width: 100%;
+    background: var(--color-sheet);
+    border: 2px solid var(--color-ink);
+    border-radius: 2px;
+    padding: 0.6rem 0.75rem;
+    font: inherit;
+    color: var(--color-ink);
+  }
+  .input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-pink);
+  }
+  textarea.input {
+    min-height: 7rem;
+    resize: vertical;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.005em;
+    line-height: 0.9;
+  }
+
+  .panel {
+    background: var(--color-sheet);
+    border: 2px solid var(--color-ink);
+  }
+
+  .notice {
+    border-left: 6px solid var(--color-pink);
+    background: var(--color-sheet);
+    padding: 0.85rem 1rem;
+  }
+  .notice-error {
+    border-left-color: var(--color-pink-deep);
+    color: var(--color-pink-deep);
+    font-weight: 600;
+  }
+}
+
+/* Çalan şarkının plağı döner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spin 2.4s linear infinite;
+}
+
+/* Sayfa açılışında plak afişin içine kayar: sitedeki tek kendiliğinden hareket */
+.poster-disc {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: disc-in 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes disc-in {
+  from {
+    transform: translateX(22%) rotate(-140deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin,
+  .poster-disc {
+    animation: none;
+  }
+  .btn {
+    transition: none;
+  }
+}
